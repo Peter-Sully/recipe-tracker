@@ -1,16 +1,19 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const Recipe = require('./models/Recipe');
+const methodOverride = require('method-override');
 require('dotenv').config();
 
-const Recipe = require('./models/Recipe');
-
 const app = express();
-app.use(express.json());
 
-// Connect to MongoDB
+app.set('view engine', 'ejs');
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
+app.use(methodOverride('_method'));
+
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('✅ Connected to MongoDB'))
-  .catch(err => console.error('❌ MongoDB connection error:', err));
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch(err => console.error("MongoDB error:", err));
 
 // Create a new recipe
 app.post('/recipes', async (req, res) => {
@@ -54,9 +57,37 @@ app.put('/recipes/:id', async (req, res) => {
 app.delete('/recipes/:id', async (req, res) => {
   try {
     await Recipe.findByIdAndDelete(req.params.id);
-    res.json({ message: 'Deleted successfully' });
+    res.redirect('/');
+    
   } catch (err) {
     res.status(400).json({ error: err.message });
+  }
+});
+
+// View all recipes in a page
+app.get('/', async (req, res) => {
+  const recipes = await Recipe.find().sort({ createdAt: -1 });
+  res.render('index', { recipes });
+});
+
+// Render a form to add a new recipe
+app.get('/new', (req, res) => {
+  res.render('form');
+});
+
+app.post('/recipes-form', async (req, res) => {
+  try {
+    const recipe = new Recipe({
+      name: req.body.name,
+      url: req.body.url,
+      body: req.body.body,
+      review: req.body.review,
+      tags: req.body.tags.split(',').map(t => t.trim())
+    });
+    await recipe.save();
+    res.redirect('/');
+  } catch (err) {
+    res.send('Error saving recipe: ' + err.message);
   }
 });
 

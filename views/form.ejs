@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Add Recipe</title>
+</head>
+<body>
+  <h1>Add New Recipe</h1>
+  <form action="/recipes-form" method="POST">
+    <input name="name" placeholder="Recipe name" required /><br />
+    <input name="url" placeholder="Recipe URL" required /><br />
+    <textarea name="body" placeholder="Full recipe" required></textarea><br />
+    <textarea name="review" placeholder="Your review"></textarea><br />
+    <input name="tags" placeholder="Tags (comma-separated)" /><br />
+    <button type="submit">Save</button>
+  </form>
+</body>
+</html>
