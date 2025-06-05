@@ -6,20 +6,21 @@
 </head>
 <body>
   <h1>Recipe Tracker</h1>
-  <a href="/new">Add New Recipe</a>
-  <ul>
-    <% recipes.forEach(r => { %>
-      <li>
-        <h2><%= r.name %></h2>
-        <p><a href="<%= r.url %>"><%= r.url %></a></p>
-        <pre><%= r.body %></pre>
-        <p><strong>Review:</strong> <%= r.review %></p>
-        <p><strong>Tags:</strong> <%= r.tags.join(', ') %></p>
-        <form action="/recipes/<%= r._id %>?_method=DELETE" method="POST">
-          <button type="submit">🗑 Delete</button>
-        </form>
-      </li>
-    <% }) %>
+  <a href="/new" class="button">➕ Add New Recipe</a>
+
+  <% recipes.forEach(r => { %>
+    <div class="recipe-card">
+      <h2><%= r.name %></h2>
+      <p><a href="<%= r.url %>" target="_blank"><%= r.url %></a></p>
+      <pre><%= r.body %></pre>
+      <p><strong>Review:</strong> <%= r.review %></p>
+      <p><strong>Tags:</strong> <%= r.tags.join(', ') %></p>
+      <form action="/recipes/<%= r._id %>?_method=DELETE" method="POST" class="delete-form">
+        <button type="submit">🗑 Delete</button>
+      </form>
+    </div>
+  <% }) %>
+
   </ul>
 </body>
 </html>

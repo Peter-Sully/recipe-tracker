@@ -2,16 +2,19 @@
 <html>
 <head>
   <title>Add Recipe</title>
+  <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
   <h1>Add New Recipe</h1>
-  <form action="/recipes-form" method="POST">
-    <input name="name" placeholder="Recipe name" required /><br />
-    <input name="url" placeholder="Recipe URL" required /><br />
-    <textarea name="body" placeholder="Full recipe" required></textarea><br />
-    <textarea name="review" placeholder="Your review"></textarea><br />
-    <input name="tags" placeholder="Tags (comma-separated)" /><br />
-    <button type="submit">Save</button>
-  </form>
+    <a href="/" class="button">← Back</a>
+    <form action="/recipes-form" method="POST">
+    <input name="name" placeholder="Recipe name" required /><br /><br />
+    <input name="url" placeholder="Recipe URL" required /><br /><br />
+    <textarea name="body" placeholder="Full recipe" required rows="6" cols="50"></textarea><br /><br />
+    <textarea name="review" placeholder="Your review" rows="3" cols="50"></textarea><br /><br />
+    <input name="tags" placeholder="Tags (comma-separated)" /><br /><br />
+    <button type="submit">💾 Save</button>
+    </form>
+
 </body>
 </html>
