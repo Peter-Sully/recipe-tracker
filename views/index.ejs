@@ -15,6 +15,7 @@
       <pre><%= r.body %></pre>
       <p><strong>Review:</strong> <%= r.review %></p>
       <p><strong>Tags:</strong> <%= r.tags.join(', ') %></p>
+      <a href="/recipes/<%= r._id %>/edit" class="button">✏️ Edit</a>
       <form action="/recipes/<%= r._id %>?_method=DELETE" method="POST" class="delete-form">
         <button type="submit">🗑 Delete</button>
       </form>

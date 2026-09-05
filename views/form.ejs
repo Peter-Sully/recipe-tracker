@@ -1,18 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Add Recipe</title>
+  <title><%= recipe ? 'Edit Recipe' : 'Add Recipe' %></title>
   <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
-  <h1>Add New Recipe</h1>
+  <h1><%= recipe ? 'Edit Recipe' : 'Add New Recipe' %></h1>
     <a href="/" class="button">← Back</a>
-    <form action="/recipes-form" method="POST">
-    <input name="name" placeholder="Recipe name" required /><br /><br />
-    <input name="url" placeholder="Recipe URL" required /><br /><br />
-    <textarea name="body" placeholder="Full recipe" required rows="6" cols="50"></textarea><br /><br />
-    <textarea name="review" placeholder="Your review" rows="3" cols="50"></textarea><br /><br />
-    <input name="tags" placeholder="Tags (comma-separated)" /><br /><br />
+    <% if (recipe) { %>
+      <form action="/recipes-form/<%= recipe._id %>?_method=PUT" method="POST">
+    <% } else { %>
+      <form action="/recipes-form" method="POST">
+    <% } %>
+    <label for="name">Recipe Name</label><br />
+    <input id="name" name="name" value="<%= recipe ? recipe.name : '' %>" required /><br /><br />
+    <label for="url">Recipe URL</label><br />
+    <input id="url" name="url" value="<%= recipe ? recipe.url : '' %>" required /><br /><br />
+    <label for="body">Full Recipe</label><br />
+    <textarea id="body" name="body" required rows="6" cols="50"><%= recipe ? recipe.body : '' %></textarea><br /><br />
+    <label for="review">Your Review</label><br />
+    <textarea id="review" name="review" rows="3" cols="50"><%= recipe ? recipe.review : '' %></textarea><br /><br />
+    <label for="tags">Tags (comma-separated)</label><br />
+    <input id="tags" name="tags" value="<%= recipe ? recipe.tags.join(', ') : '' %>" /><br /><br />
     <button type="submit">💾 Save</button>
     </form>
 

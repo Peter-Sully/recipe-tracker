@@ -12,86 +12,179 @@ app.use(express.static('public'));
 app.use(methodOverride('_method'));
 
 mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("✅ MongoDB connected"))
-  .catch(err => console.error("MongoDB error:", err));
+  .then(() => console.log("MongoDB connected"))
+  .catch(err => {
+    console.error("MongoDB error:", err);
+    process.exit(1);
+  });
 
-// Create a new recipe
-app.post('/recipes', async (req, res) => {
+// Create a new recipe (API)
+app.post('/recipes', async (req, res, next) => {
   try {
     const recipe = new Recipe(req.body);
     const saved = await recipe.save();
     res.status(201).json(saved);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    next(err);
   }
 });
 
-// Get all recipes
-app.get('/recipes', async (req, res) => {
-  const recipes = await Recipe.find();
-  res.json(recipes);
+// Get all recipes (API)
+app.get('/recipes', async (req, res, next) => {
+  try {
+    const recipes = await Recipe.find();
+    res.json(recipes);
+  } catch (err) {
+    next(err);
+  }
 });
 
-// Get a specific recipe
-app.get('/recipes/:id', async (req, res) => {
+// Get a specific recipe (API)
+app.get('/recipes/:id', async (req, res, next) => {
   try {
     const recipe = await Recipe.findById(req.params.id);
-    if (!recipe) return res.status(404).json({ error: 'Not found' });
+    if (!recipe) return res.status(404).json({ error: 'Recipe not found' });
     res.json(recipe);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    next(err);
   }
 });
 
-// Update a recipe
-app.put('/recipes/:id', async (req, res) => {
+// Update a recipe (API)
+app.put('/recipes/:id', async (req, res, next) => {
   try {
-    const updated = await Recipe.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    const updated = await Recipe.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+    if (!updated) return res.status(404).json({ error: 'Recipe not found' });
     res.json(updated);
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    next(err);
+  }
+});
+
+// Update a recipe from the form
+app.put('/recipes-form/:id', async (req, res, next) => {
+  try {
+    const recipe = await Recipe.findById(req.params.id);
+    if (!recipe) return res.status(404).render('error', {
+      message: 'Recipe not found',
+      status: 404
+    });
+
+    recipe.name = req.body.name;
+    recipe.url = req.body.url;
+    recipe.body = req.body.body;
+    recipe.review = req.body.review;
+    recipe.tags = req.body.tags ? req.body.tags.split(',').map(t => t.trim()) : [];
+
+    await recipe.save();
+    res.redirect('/');
+  } catch (err) {
+    next(err);
   }
 });
 
 // Delete a recipe
-app.delete('/recipes/:id', async (req, res) => {
+app.delete('/recipes/:id', async (req, res, next) => {
   try {
-    await Recipe.findByIdAndDelete(req.params.id);
+    const deleted = await Recipe.findByIdAndDelete(req.params.id);
+    if (!deleted) return res.status(404).send('Recipe not found');
     res.redirect('/');
-    
   } catch (err) {
-    res.status(400).json({ error: err.message });
+    next(err);
   }
 });
 
 // View all recipes in a page
-app.get('/', async (req, res) => {
-  const recipes = await Recipe.find().sort({ createdAt: -1 });
-  res.render('index', { recipes });
+app.get('/', async (req, res, next) => {
+  try {
+    const recipes = await Recipe.find().sort({ createdAt: -1 });
+    res.render('index', { recipes, error: null });
+  } catch (err) {
+    next(err);
+  }
 });
 
 // Render a form to add a new recipe
 app.get('/new', (req, res) => {
-  res.render('form');
+  res.render('form', { recipe: null, error: null });
 });
 
-app.post('/recipes-form', async (req, res) => {
+// Render a form to edit an existing recipe
+app.get('/recipes/:id/edit', async (req, res, next) => {
+  try {
+    const recipe = await Recipe.findById(req.params.id);
+    if (!recipe) return res.status(404).render('error', {
+      message: 'Recipe not found',
+      status: 404
+    });
+    res.render('form', { recipe, error: null });
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Create a recipe from the form
+app.post('/recipes-form', async (req, res, next) => {
   try {
     const recipe = new Recipe({
       name: req.body.name,
       url: req.body.url,
       body: req.body.body,
       review: req.body.review,
-      tags: req.body.tags.split(',').map(t => t.trim())
+      tags: req.body.tags ? req.body.tags.split(',').map(t => t.trim()) : []
     });
     await recipe.save();
     res.redirect('/');
   } catch (err) {
-    res.send('Error saving recipe: ' + err.message);
+    next(err);
   }
+});
+
+// 404 handler for unknown routes
+app.use((req, res) => {
+  res.status(404).render('error', {
+    message: `Route not found: ${req.method} ${req.originalUrl}`,
+    status: 404
+  });
+});
+
+// Global error handler
+app.use((err, req, res, next) => {
+  console.error('Error:', err.message);
+
+  // Mongoose validation errors
+  if (err.name === 'ValidationError') {
+    const messages = Object.values(err.errors).map(e => e.message);
+    return res.status(400).render('error', {
+      message: `Validation failed: ${messages.join(', ')}`,
+      status: 400
+    });
+  }
+
+  // Mongoose CastError (invalid ObjectId)
+  if (err.name === 'CastError') {
+    return res.status(400).render('error', {
+      message: `Invalid ID format: ${err.value}`,
+      status: 400
+    });
+  }
+
+  // Duplicate key error
+  if (err.code === 11000) {
+    return res.status(409).render('error', {
+      message: 'Duplicate value: this recipe already exists',
+      status: 409
+    });
+  }
+
+  // Default 500 error
+  res.status(500).render('error', {
+    message: 'Something went wrong on the server',
+    status: 500
+  });
 });
 
 // Start the server
 app.listen(process.env.PORT, () => {
-  console.log(`🚀 Server running on port ${process.env.PORT}`);
+  console.log(`Server running on port ${process.env.PORT}`);
 });
