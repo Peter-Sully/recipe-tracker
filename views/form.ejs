@@ -1,29 +1,71 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title><%= recipe ? 'Edit Recipe' : 'Add Recipe' %></title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= recipe ? 'Edit Recipe' : 'Add Recipe' %> — Recipe Tracker</title>
   <link rel="stylesheet" href="/style.css" />
 </head>
 <body>
-  <h1><%= recipe ? 'Edit Recipe' : 'Add New Recipe' %></h1>
-    <a href="/" class="button">← Back</a>
-    <% if (recipe) { %>
-      <form action="/recipes-form/<%= recipe._id %>?_method=PUT" method="POST">
-    <% } else { %>
-      <form action="/recipes-form" method="POST">
-    <% } %>
-    <label for="name">Recipe Name</label><br />
-    <input id="name" name="name" value="<%= recipe ? recipe.name : '' %>" required /><br /><br />
-    <label for="url">Recipe URL</label><br />
-    <input id="url" name="url" value="<%= recipe ? recipe.url : '' %>" required /><br /><br />
-    <label for="body">Full Recipe</label><br />
-    <textarea id="body" name="body" required rows="6" cols="50"><%= recipe ? recipe.body : '' %></textarea><br /><br />
-    <label for="review">Your Review</label><br />
-    <textarea id="review" name="review" rows="3" cols="50"><%= recipe ? recipe.review : '' %></textarea><br /><br />
-    <label for="tags">Tags (comma-separated)</label><br />
-    <input id="tags" name="tags" value="<%= recipe ? recipe.tags.join(', ') : '' %>" /><br /><br />
-    <button type="submit">💾 Save</button>
-    </form>
+  <header class="header">
+    <div class="header-inner">
+      <div class="brand">
+        <div class="brand-mark">🍳</div>
+        <div>
+          <h1>Recipe Tracker</h1>
+        </div>
+      </div>
+      <a href="/" class="btn btn-outline-light">← Back to Recipes</a>
+    </div>
+  </header>
 
+  <main class="page form-page">
+    <div class="form-header">
+      <h1><%= recipe ? '✏️ Edit Recipe' : '➕ Add New Recipe' %></h1>
+    </div>
+
+    <div class="form-card">
+      <% if (recipe) { %>
+        <form action="/recipes-form/<%= recipe._id %>?_method=PUT" method="POST">
+      <% } else { %>
+        <form action="/recipes-form" method="POST">
+      <% } %>
+
+        <div class="form-group">
+          <label for="name">Recipe Name</label>
+          <input id="name" name="name" value="<%= recipe ? recipe.name : '' %>" placeholder="e.g. Grandma's Banana Bread" required />
+        </div>
+
+        <div class="form-group">
+          <label for="url">Recipe URL <span class="hint">(link to the original recipe)</span></label>
+          <input id="url" name="url" value="<%= recipe ? recipe.url : '' %>" placeholder="https://example.com/recipe" type="url" required />
+        </div>
+
+        <div class="form-group">
+          <label for="body">Full Recipe</label>
+          <textarea id="body" name="body" rows="8" placeholder="Ingredients and instructions..." required><%= recipe ? recipe.body : '' %></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="review">Your Review <span class="hint">(optional)</span></label>
+          <textarea id="review" name="review" rows="3" placeholder="What did you think? How did it turn out?"><%= recipe ? recipe.review : '' %></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="tags">Tags <span class="hint">(comma-separated)</span></label>
+          <input id="tags" name="tags" value="<%= recipe ? recipe.tags.join(', ') : '' %>" placeholder="e.g. dessert, easy, vegetarian" />
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary btn-lg">💾 Save Recipe</button>
+          <a href="/" class="btn btn-outline">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>🍳 Recipe Tracker: save, review, and organize your favorite recipes</p>
+  </footer>
 </body>
 </html>
