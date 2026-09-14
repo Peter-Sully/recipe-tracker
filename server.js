@@ -4,6 +4,28 @@ const Recipe = require('./models/Recipe');
 const methodOverride = require('method-override');
 require('dotenv').config();
 
+// Escape regex metacharacters so user input is treated as literal text
+function escapeRegex(str) {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// Build a Mongo filter for searching by name, tag, or keyword.
+// Matches case-insensitively across name, body, review, and tags.
+// Returns {} (match everything) when there is no query.
+function buildSearchFilter(rawQuery) {
+  const query = (rawQuery || '').trim();
+  if (!query) return {};
+  const regex = new RegExp(escapeRegex(query), 'i');
+  return {
+    $or: [
+      { name: regex },
+      { body: regex },
+      { review: regex },
+      { tags: regex }
+    ]
+  };
+}
+
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -29,10 +51,10 @@ app.post('/recipes', async (req, res, next) => {
   }
 });
 
-// Get all recipes (API)
+// Get all recipes (API) — supports ?q= to search by name, tag, or keyword
 app.get('/recipes', async (req, res, next) => {
   try {
-    const recipes = await Recipe.find();
+    const recipes = await Recipe.find(buildSearchFilter(req.query.q));
     res.json(recipes);
   } catch (err) {
     next(err);
@@ -106,11 +128,12 @@ app.delete('/recipes/:id', async (req, res, next) => {
   }
 });
 
-// View all recipes in a page
+// View all recipes in a page — supports ?q= to search by name, tag, or keyword
 app.get('/', async (req, res, next) => {
   try {
-    const recipes = await Recipe.find().sort({ createdAt: -1 });
-    res.render('index', { recipes, error: null });
+    const query = (req.query.q || '').trim();
+    const recipes = await Recipe.find(buildSearchFilter(query)).sort({ createdAt: -1 });
+    res.render('index', { recipes, error: null, query });
   } catch (err) {
     next(err);
   }

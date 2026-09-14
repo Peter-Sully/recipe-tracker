@@ -27,7 +27,7 @@
         <% if (recipe.tags && recipe.tags.length > 0) { %>
           <div class="tags">
             <% recipe.tags.forEach(tag => { %>
-              <span class="tag"><%= tag %></span>
+              <a href="/?q=<%= encodeURIComponent(tag) %>" class="tag tag-link" title="Search recipes tagged “<%= tag %>”"><%= tag %></a>
             <% }) %>
           </div>
         <% } %>
