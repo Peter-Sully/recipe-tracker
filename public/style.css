@@ -176,6 +176,11 @@ img {
   margin-top: 2px;
 }
 
+.brand {
+  text-decoration: none;
+  color: inherit;
+}
+
 @media (max-width: 640px) {
   .brand h1 {
     font-size: 1.35rem;
