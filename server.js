@@ -39,11 +39,23 @@ app.get('/recipes', async (req, res, next) => {
   }
 });
 
-// Get a specific recipe (API)
+// Get a specific recipe — renders the detail page for browsers,
+// returns JSON when the client explicitly requests it
 app.get('/recipes/:id', async (req, res, next) => {
   try {
     const recipe = await Recipe.findById(req.params.id);
-    if (!recipe) return res.status(404).json({ error: 'Recipe not found' });
+    if (!recipe) {
+      if (req.accepts('html')) {
+        return res.status(404).render('error', {
+          message: 'Recipe not found',
+          status: 404
+        });
+      }
+      return res.status(404).json({ error: 'Recipe not found' });
+    }
+    if (req.accepts('html')) {
+      return res.render('recipe', { recipe });
+    }
     res.json(recipe);
   } catch (err) {
     next(err);

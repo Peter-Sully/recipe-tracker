@@ -472,6 +472,103 @@ img {
   display: inline;
 }
 
+/* ============================================
+   Recipe Detail Page
+   ============================================ */
+.recipe-detail-page {
+  max-width: 780px;
+  margin: 0 auto;
+}
+
+.recipe-detail-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-md);
+}
+
+@media (max-width: 640px) {
+  .recipe-detail-card {
+    padding: var(--space-5);
+  }
+}
+
+.recipe-detail-title {
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  color: var(--text);
+}
+
+.recipe-detail-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-3);
+}
+
+.recipe-detail-meta .tags {
+  margin-bottom: var(--space-1);
+}
+
+.recipe-source-link {
+  font-size: 0.85rem;
+  color: var(--primary);
+  word-break: break-all;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.recipe-source-link:hover {
+  color: var(--primary-dark);
+}
+
+.recipe-detail-review {
+  background: var(--accent-light);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  margin-top: var(--space-4);
+}
+
+.recipe-detail-section-title {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.01em;
+  margin-top: var(--space-6);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: var(--space-2);
+}
+
+.recipe-detail-body {
+  font-size: 1.15rem;
+  line-height: 1.8;
+  color: var(--text);
+  background: var(--surface-alt);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  white-space: pre-line;
+  word-break: break-word;
+  font-family: var(--font-body);
+}
+
+.recipe-detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px dashed var(--border);
+}
+
 /* ---------- Empty State ---------- */
 .empty-state {
   text-align: center;
