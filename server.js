@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const Recipe = require('./models/Recipe');
+const markdown = require('./public/js/markdown');
 const methodOverride = require('method-override');
 require('dotenv').config();
 
@@ -76,7 +77,7 @@ app.get('/recipes/:id', async (req, res, next) => {
       return res.status(404).json({ error: 'Recipe not found' });
     }
     if (req.accepts('html')) {
-      return res.render('recipe', { recipe });
+      return res.render('recipe', { recipe, md: markdown });
     }
     res.json(recipe);
   } catch (err) {
@@ -133,7 +134,7 @@ app.get('/', async (req, res, next) => {
   try {
     const query = (req.query.q || '').trim();
     const recipes = await Recipe.find(buildSearchFilter(query)).sort({ createdAt: -1 });
-    res.render('index', { recipes, error: null, query });
+    res.render('index', { recipes, error: null, query, md: markdown });
   } catch (err) {
     next(err);
   }

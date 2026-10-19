@@ -37,12 +37,12 @@
       <% if (recipe.review) { %>
         <div class="recipe-detail-review">
           <span class="review-label">Review:</span>
-          <span class="review-text">"<%= recipe.review %>"</span>
+          <span class="review-text">"<%- md.inline(recipe.review) %>"</span>
         </div>
       <% } %>
 
       <h2 class="recipe-detail-section-title">📖 Full Recipe</h2>
-      <div class="recipe-detail-body"><%= recipe.body %></div>
+      <div class="recipe-detail-body markdown-body"><%- md.render(recipe.body) %></div>
 
       <div class="recipe-detail-actions">
         <a href="/recipes/<%= recipe._id %>/edit" class="btn btn-outline">✏️ Edit</a>

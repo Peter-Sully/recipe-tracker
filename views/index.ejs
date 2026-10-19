@@ -71,12 +71,12 @@
               <h3><a href="/recipes/<%= r._id %>"><%= r.name %></a></h3>
             </div>
 
-            <div class="recipe-body"><%= r.body %></div>
+            <div class="recipe-body"><%- md.render(r.body) %></div>
 
             <% if (r.review) { %>
               <div class="review">
                 <span class="review-label">Review:</span>
-                <span class="review-text">"<%= r.review %>"</span>
+                <span class="review-text">"<%- md.inline(r.review) %>"</span>
               </div>
             <% } %>
 

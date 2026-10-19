@@ -42,13 +42,51 @@
         </div>
 
         <div class="form-group">
-          <label for="body">Full Recipe</label>
-          <textarea id="body" name="body" rows="8" placeholder="Ingredients and instructions..." required><%= recipe ? recipe.body : '' %></textarea>
+          <label for="body">Full Recipe <span class="hint">(Markdown supported — **bold**, *italic*, [links](https://...))</span></label>
+          <div class="md-editor" data-md-editor>
+            <div class="md-toolbar">
+              <button type="button" class="md-btn" data-md="bold" title="Bold (Ctrl+B)">B</button>
+              <button type="button" class="md-btn" data-md="italic" title="Italic (Ctrl+I)">I</button>
+              <button type="button" class="md-btn" data-md="h1" title="Heading 1 (#)">H1</button>
+              <button type="button" class="md-btn" data-md="h2" title="Heading 2 (##)">H2</button>
+              <button type="button" class="md-btn" data-md="ul" title="Bulleted list (- )">• List</button>
+              <button type="button" class="md-btn" data-md="ol" title="Numbered list (1. )">1. List</button>
+              <button type="button" class="md-btn" data-md="quote" title="Quote (> )">❝</button>
+              <button type="button" class="md-btn" data-md="link" title="Insert link">🔗</button>
+              <button type="button" class="md-btn" data-md="code" title="Inline code (`)">`</button>
+              <span class="md-spacer"></span>
+              <div class="md-tabs">
+                <button type="button" class="md-tab is-active" data-md-view="write" aria-pressed="true">✍️ Write</button>
+                <button type="button" class="md-tab" data-md-view="preview" aria-pressed="false">👁 Preview</button>
+              </div>
+            </div>
+            <textarea id="body" name="body" rows="8" placeholder="Ingredients and instructions... (Markdown supported)" required><%= recipe ? recipe.body : '' %></textarea>
+            <div class="md-preview markdown-body" hidden></div>
+          </div>
         </div>
 
         <div class="form-group">
-          <label for="review">Your Review <span class="hint">(optional)</span></label>
-          <textarea id="review" name="review" rows="3" placeholder="What did you think? How did it turn out?"><%= recipe ? recipe.review : '' %></textarea>
+          <label for="review">Your Review <span class="hint">(optional · Markdown supported)</span></label>
+          <div class="md-editor" data-md-editor>
+            <div class="md-toolbar">
+              <button type="button" class="md-btn" data-md="bold" title="Bold (Ctrl+B)">B</button>
+              <button type="button" class="md-btn" data-md="italic" title="Italic (Ctrl+I)">I</button>
+              <button type="button" class="md-btn" data-md="h1" title="Heading 1 (#)">H1</button>
+              <button type="button" class="md-btn" data-md="h2" title="Heading 2 (##)">H2</button>
+              <button type="button" class="md-btn" data-md="ul" title="Bulleted list (- )">• List</button>
+              <button type="button" class="md-btn" data-md="ol" title="Numbered list (1. )">1. List</button>
+              <button type="button" class="md-btn" data-md="quote" title="Quote (> )">❝</button>
+              <button type="button" class="md-btn" data-md="link" title="Insert link">🔗</button>
+              <button type="button" class="md-btn" data-md="code" title="Inline code (`)">`</button>
+              <span class="md-spacer"></span>
+              <div class="md-tabs">
+                <button type="button" class="md-tab is-active" data-md-view="write" aria-pressed="true">✍️ Write</button>
+                <button type="button" class="md-tab" data-md-view="preview" aria-pressed="false">👁 Preview</button>
+              </div>
+            </div>
+            <textarea id="review" name="review" rows="3" placeholder="What did you think? How did it turn out? (Markdown supported)"><%= recipe ? recipe.review : '' %></textarea>
+            <div class="md-preview markdown-body" hidden></div>
+          </div>
         </div>
 
         <div class="form-group">
@@ -67,5 +105,9 @@
   <footer class="footer">
     <p>🍳 Recipe Tracker: save, review, and organize your favorite recipes</p>
   </footer>
+
+  <script src="/js/markdown.js"></script>
+  <script src="/js/text-format.js"></script>
+  <script src="/js/editor.js"></script>
 </body>
 </html>
