@@ -31,7 +31,9 @@
             <% }) %>
           </div>
         <% } %>
-        <a href="<%= recipe.url %>" target="_blank" rel="noopener noreferrer" class="recipe-source-link">🔗 View original recipe</a>
+        <% if (recipe.url) { %>
+          <a href="<%= recipe.url %>" target="_blank" rel="noopener noreferrer" class="recipe-source-link">🔗 View original recipe</a>
+        <% } %>
       </div>
 
       <% if (recipe.review) { %>
@@ -47,7 +49,7 @@
       <div class="recipe-detail-actions">
         <a href="/recipes/<%= recipe._id %>/edit" class="btn btn-outline">✏️ Edit</a>
         <form action="/recipes/<%= recipe._id %>?_method=DELETE" method="POST" class="inline-form" onsubmit="return confirm('Delete this recipe?');">
-          <button type="submit" class="btn btn-danger">🗑 Delete</button>
+          <button type="submit" class="btn btn-danger">🗑️ Delete</button>
         </form>
       </div>
     </div>
